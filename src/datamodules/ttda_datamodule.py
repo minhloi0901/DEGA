@@ -154,8 +154,8 @@ class IDDDataSet(BaseDataset):
 		for name in self.img_ids:
 			img_file, label_file = self.get_metadata(name)
 			self.files.append((img_file, label_file, name))
-		if hasattr(self, 'sample'):
-			self.files = self.files[:100]
+		# if hasattr(self, 'sample'):
+		self.files = self.files[:100]
 	
 	def get_metadata(self, name):
 		img_file = self.data_dir + '/leftImg8bit/' + self.set + '/' + name + '_leftImg8bit.png'
@@ -167,56 +167,14 @@ class IDDDataSet(BaseDataset):
 
 	def __getitem__(self, index):
 		img_path, label_path, name = self.files[index]
-		
-		# Load images
-		image = Image.open(img_path).convert('RGB')
-		label = Image.open(label_path)
-		
-		# Get original dimensions
-		width, height = image.size
-		
-		# Resize if crop_size is specified
-		if self.crop_size is not None:
-			# Calculate aspect ratio preserving resize
-			target_width, target_height = self.crop_size
-			aspect_ratio = width / height
-			target_aspect = target_width / target_height
-			
-			if aspect_ratio > target_aspect:
-				# Image is wider than target
-				new_width = int(height * target_aspect)
-				new_height = height
-			else:
-				# Image is taller than target
-				new_width = width
-				new_height = int(width / target_aspect)
-			
-			# Resize maintaining aspect ratio
-			image = image.resize((new_width, new_height), Image.BICUBIC)
-			label = label.resize((new_width, new_height), Image.NEAREST)
-			
-			# Center crop to target size
-			left = (new_width - target_width) // 2
-			top = (new_height - target_height) // 2
-			right = left + target_width
-			bottom = top + target_height
-			
-			image = image.crop((left, top, right, bottom))
-			label = label.crop((left, top, right, bottom))
-		
-		# Convert to numpy arrays
-		image = np.array(image)
-		label = np.array(label)
-		
-		# Convert to BGR and normalize
-		image = image[:, :, ::-1]  # RGB to BGR
+		image = _load_img(img_path, self.crop_size, Image.BICUBIC, True)
+		label = _load_img(label_path, self.crop_size, Image.NEAREST, False)
+		image = image[:, :, ::-1]  # change to BGR
 		if self.mean is not None:
-			image = image - self.mean
-		
-		# Transpose to CxHxW
+			image -= self.mean
 		image = image.transpose((2, 0, 1))
-		
 		return image.copy(), label.copy(), np.array(image.shape), name
+		# return image.copy().astype(np.float32), label.copy(), np.array(image.shape), name
 
 class MultiInOneDataset(data.Dataset):
 	"""A class which combines multiple datasets into one, order is random

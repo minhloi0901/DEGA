@@ -1,4 +1,7 @@
   _target_: src.models.ttda_module.DeepLabv2AdaptSeg
   _partial_: true
   multi_level: true
-  restore_from: ${paths.data_dir}/models/DA_Seg_models/GTA5/gta_source_baseline.pth
+  # restore_from: ${paths.data_dir}/models/DA_Seg_models/GTA5/gta_baseline.pth #bdd, map #cc
+  restore_from: ${paths.data_dir}/models/DA_Seg_models/GTA5/gta_source_baseline.pth #cs
+  # restore_from: ${paths.data_dir}/models/DA_Seg_models/GTA5/gta_baseline_new.pth #idd
+  

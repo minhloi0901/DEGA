@@ -184,16 +184,18 @@ def make_dataset(root, mode_input, maxSkip=0, cv_split=0):
     img_path = os.path.join(root, 'images/10k') # TODO
     mask_path = os.path.join(root, 'labels/sem_seg/masks')
     mask_postfix = '_train_id.png'
+    # mask_postfix = '.png'
     # cv_splits = make_cv_splits(img_dir_name)
     if mode == 'trainval':
         modes = ['train', 'val']
     else:
         modes = [mode]
+        
     for mode in modes:
         logging.info('{} fine cities: '.format(mode))
         add_items(items, aug_items, img_path, mask_path,
                     mask_postfix, mode, maxSkip)
-
+    
     logging.info('BDD100K-{}: {} images'.format(mode, len(items) + len(aug_items)))
     if sample is not None:
         import random
@@ -300,7 +302,7 @@ class BDD100KDataSet(BaseDataset):
             # Convert to tensor and normalize
             img = torch.from_numpy(img).float().permute(2, 0, 1)
             mask_copy = torch.from_numpy(mask_copy).int().squeeze()
-            return img, mask_copy, "", ""
+            return img, mask_copy, "", img_name
         
         # Convert mask back to PIL Image for transforms
         mask = Image.fromarray(mask_copy.astype(np.uint8))
@@ -340,7 +342,7 @@ class BDD100KDataSet(BaseDataset):
             mask_img = colorize_mask(np.array(mask))
             img.save(out_img_fn)
             mask_img.save(out_msk_fn)
-
+        
         return img, mask, img_name, mask_aux
 
     def __len__(self):

@@ -1,4 +1,4 @@
   _target_: src.models.ttda_module.DeepLabv2AdaptSeg
   _partial_: true
   multi_level: true
-  restore_from: ${paths.data_dir}/models/DA_Seg_models/SYNTHIA/SYNTHIA2Cityscapes_LSGAN.pth
+  restore_from: ${paths.data_dir}/models/DA_Seg_models/SYNTHIA/synthia_baseline_v4.pth

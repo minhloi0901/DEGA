@@ -2,10 +2,11 @@ defaults:
   - net: gta5_source
 _target_: src.models.ttda_module.DIGA
 cfg:
-  bn_lambda: 0.8
+  bn_lambda: 0.9
   proto_lambda: 0.8
-  fusion_lambda: 0.8 # best
+  fusion_lambda: 0.4
   confidence_threshold: 0.9
-  top_k: 1.0 # best
-  proto_rho: 0.1 # best
-  memory_bank_size: 32
+  top_k: 1.0 
+  proto_rho: 0.8
+  bn_bank_size: 4
+  prototype_bank_size: 32
